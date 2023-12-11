@@ -19,7 +19,7 @@ $result = $conn->query($sql);
 // Verificar si hay resultados
 if ($result->num_rows > 0) {
   // Mostrar datos en una tabla de Bootstrap
-  echo '<table class="table table-bordered">';
+  echo '<table class="table table-bordered table-responsive">';
   echo '<thead>';
   echo '<tr>';
   echo '<th>Nombre del Repuesto</th>';
@@ -75,7 +75,7 @@ if ($result->num_rows > 0) {
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" id="content_eliminar">
-          <form method="post" action="repuesto/delete.php">
+          <form method="post" action="/app/modulos/repuesto/delete.php">
             <input type="hidden" name="repuestoId" value="" id="eliminarRepuestoId">
             <div class="form-group">
               <label for="">Estás seguro de elimiar el registro?</label>
@@ -90,7 +90,7 @@ if ($result->num_rows > 0) {
 
   <script>
     function editar(id) {
-      $("#content_editar").load("editarRepuesto.php?id=" + id);
+      $("#content_editar").load("/app/modulos/repuesto/editarRepuesto.php?id=" + id);
       $("#modal-editar").modal("show");
     }
 

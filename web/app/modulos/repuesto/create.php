@@ -2,6 +2,11 @@
 
 include __DIR__ . '/../../db.php';
 include __DIR__ . '/../../response.php';
+include __DIR__ . '/../../helpers/server.php';
+
+use App\Helpers\Server;
+
+$referer = Server::getReferer();
 
 // create.php
 // Verificar si se ha enviado el formulario
@@ -18,22 +23,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   // Query para insertar un nuevo repuesto
   $sql = "INSERT INTO repuesto (NOMBRE_REPUESTO, OBSERVACION, STOCK, PRECIO_UNITARIO, FK_VEHICULO, FK_PARTE) 
-            VALUES ('$nombreRepuesto', '$observacion', $stock, $precioUnitario, $fkVehiculo, $fkParte)";
+            VALUES (?, ?, ?, ?, ?, ?)";
 
-  if ($conn->query($sql) === TRUE) {
-    $success = 1;
-    $message = "Repuesto creado exitosamente.";
+  $stmt = $conn->prepare($sql);
+
+  if ($stmt) {
+    $stmt->bind_param("ssiiii", $nombreRepuesto, $observacion, $stock, $precioUnitario, $fkVehiculo, $fkParte);
+
+    if ($stmt->execute()) {
+      $success = 1;
+      $message = "Repuesto creado exitosamente.";
+    } else {
+      $success = 0;
+      $message = "Error al crear el repuesto: " . $stmt->error;
+    }
+
+    $stmt->close();
   } else {
     $success = 0;
-    $message = "Error al crear el repuesto: " . $conn->error;
+    $message = "Error al preparar la consulta: " . $conn->error;
   }
 
   // Cerrar la conexión
   $conn->close();
 
   // Redireccionar al listado
-  respond($success, $message, '../repuestos.php');
+  respond($success, $message, $referer);
 } else {
   // redireccionar a la pagina de error
-  respond(0, 'Ha ocurrido un error inesperado.', '../repuestos.php');
+  respond(0, 'Ha ocurrido un error inesperado.', $referer);
 }

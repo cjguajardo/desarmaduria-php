@@ -29,7 +29,7 @@ $conn->close();
 <hr class="text-light">
 
 <!-- Formulario HTML para crear un nuevo repuesto -->
-<form method="post" action="repuesto/create.php">
+<form method="post" action="/app/modulos/repuesto/create.php">
   <div class="form-group">
     <label class="text-light" for="nombre_repuesto">Nombre del Repuesto:</label>
     <input type="text" name="nombre_repuesto" required class="form-control">

@@ -34,7 +34,7 @@ $conn->close();
 ?>
 
 <!-- Formulario HTML para crear un nuevo repuesto -->
-<form method="post" action="repuesto/update.php">
+<form method="post" action="/app/modulos/repuesto/update.php">
   <input type="hidden" name="repuestoId" value="<?= $repuestoId ?>">
   <div class="form-group">
     <label class="text-dark" for="nombre_repuesto">Nombre del Repuesto:</label>

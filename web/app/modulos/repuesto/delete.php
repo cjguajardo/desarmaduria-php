@@ -2,6 +2,11 @@
 
 include __DIR__ . '/../../db.php';
 include __DIR__ . '/../../response.php';
+include __DIR__ . '/../../helpers/server.php';
+
+use App\Helpers\Server;
+
+$referer = Server::getReferer();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -25,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $stmt->close();
   $conn->close();
 
-  respond($success, $message, '../repuestos.php');
+  respond($success, $message, $referer);
 } else {
-  respond(0, 'Ha ocurrido un error inesperado.', '../repuestos.php');
+  respond(0, 'Ha ocurrido un error inesperado.', $referer);
 }
