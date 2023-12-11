@@ -59,13 +59,19 @@ class LayoutHelper
       $this->template = str_replace('{{SIDEBAR}}', $sidebar, $this->template);
 
       $scripts = '<script src="/assets/js/' . $section . '.js"></script>';
-      $scripts .= '<script src="/assets/js/parseResult.js"></script>';
-      $mensaje = Autenticado::obtenerMensaje();
+
+      [$mensaje, $resultado] = Autenticado::obtenerMensaje();
       if ($mensaje != null) {
-        $scripts .= '<script>';
-        $scripts .= "window.mensaje = `$mensaje`;";
+        $toast = $this->renderToast($mensaje, strtoupper($section), $resultado);
+        $this->template = str_replace('{{TOAST}}', $toast, $this->template);
+        $scripts .= '<script type="text/javascript">';
+        $scripts .= '$(document).ready(function(){$(\'#liveToast\').toast(\'show\');});';
+        $scripts .= 'setTimeout(function(){$(\'#liveToast\').toast(\'hide\');}, 5000);';
         $scripts .= '</script>';
+      } else {
+        $this->template = str_replace('{{TOAST}}', '', $this->template);
       }
+
       $this->template = str_replace('{{SCRIPTS}}', $scripts, $this->template);
     }
 
@@ -153,5 +159,25 @@ class LayoutHelper
     $sidebar .= '</nav>';
 
     return $sidebar;
+  }
+
+  public function renderToast(String $mensaje, String $titulo, String $tipo = 'success'): string
+  {
+    $toast = '';
+
+    $toast .= '<div class="toast-container position-fixed bottom-0 end-0 p-3">';
+    $toast .= '  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">';
+    $toast .= '    <div class="toast-header">';
+    $toast .= '      <img src="/assets/img/' . $tipo . '.svg" class="rounded me-2" alt="...">';
+    $toast .= '      <strong class="me-auto">' . $titulo . '</strong>';
+    $toast .= '      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>';
+    $toast .= '    </div>';
+    $toast .= '    <div class="toast-body">';
+    $toast .= '      ' . $mensaje;
+    $toast .= '    </div>';
+    $toast .= '  </div>';
+    $toast .= '</div>';
+
+    return $toast;
   }
 }
