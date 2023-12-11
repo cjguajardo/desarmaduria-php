@@ -1,0 +1,78 @@
+// custom variables
+$primary: #024589;
+$secondary: #d661a5;
+$success: #02ae62;
+$info: #d7a3ac;
+$warning: #e6cd02;
+$danger: #f71401;
+$light: #f5efba;
+$dark: #121c3c;
+
+
+// import the functions & variables
+@import "../../node_modules/bootstrap/scss/functions";
+@import "../../node_modules/bootstrap/scss/variables";
+
+$custom-theme-colors: (
+  "altlight": #f5efba,
+  "altdark": #522192
+);
+
+
+$theme-colors: map-merge($custom-theme-colors, $theme-colors);
+
+// import bootstrap
+@import '../../node_modules/bootstrap/scss/bootstrap';
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  /* Set the fixed height of the footer here */
+  line-height: 60px;
+  /* Vertically center the text there */
+  background-color: #f5f5f5;
+}
+
+#sidebar {
+  min-width: 150px;
+  max-width: 250px;
+  min-height: 90vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  li.nav-item {
+    cursor: pointer;
+
+    a.nav-link {
+      color: $dark;
+
+      &:hover {
+        color: $light;
+        background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
+        filter: alpha(opacity=90);
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+header {
+  nav {
+    li.nav-item {
+      cursor: pointer;
+
+      a.nav-link {
+        color: $light;
+
+        &:hover {
+          color: $dark;
+          background-color: rgba(var(--bs-light-rgb), var(--bs-bg-opacity)) !important;
+          filter: alpha(opacity=90);
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}

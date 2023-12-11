@@ -1,0 +1,47 @@
+version: '3.9'
+
+networks:
+  dockerdb_default:
+    external: true
+  app-network:
+    driver: bridge
+
+services:
+  app:
+    build: .
+    volumes:
+      - ./web:/usr/share/nginx/html
+    expose:
+      - 9000
+    command: php-fpm
+    networks:
+      - app-network
+      - dockerdb_default
+
+  web:
+    image: nginx:latest
+    volumes:
+      - ./web.conf:/etc/nginx/conf.d/web.conf
+      - ./web:/usr/share/nginx/html
+      - ./logs:/var/log/nginx
+    ports:
+      - 8080:8081
+    networks:
+      - app-network
+    depends_on:
+      - app
+
+  mysqldb:
+    image: mysql:latest
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: desarmaduria
+      MYSQL_USER: root
+      MYSQL_PASSWORD: csEPvC9ybfXCp9Eq
+    ports:
+      - 3306:3306
+    networks:
+      - dockerdb_default
+      
