@@ -71,9 +71,13 @@ class Autenticado
   public static function obtenerMensaje()
   {
     $mensaje = isset($_SESSION['mensaje']) ? $_SESSION['mensaje'] : null;
+    $resultado = isset($_SESSION['resultado']) ? $_SESSION['resultado'] : 'info';
     if ($mensaje != null) {
       unset($_SESSION['mensaje']);
     }
-    return $mensaje;
+    if ($resultado != null) {
+      unset($_SESSION['resultado']);
+    }
+    return [$mensaje, $resultado];
   }
 }
