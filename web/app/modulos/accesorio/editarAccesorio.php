@@ -2,65 +2,69 @@
 
 include __DIR__ . '/../../db.php';
 
-$vehiculos = [];
+$tipos = [];
 $partes = [];
 
-$repuestoId = $_GET['id']; // The ID of the repuesto to update
+$id = $_GET['id']; // The ID of the accesorio to update
 
 // Obtén y muestra los vehículos disponibles con más información
-$sqlVehiculos = "SELECT ID, MARCA, MODELO, AGNO, TRANSMISION, COMBUSTIBLE, CILINDRADA FROM vehiculo";
-$resultVehiculos = $conn->query($sqlVehiculos);
+$query = "SELECT ID, TIPO FROM tipo_accesorio";
+$result = $conn->query($query);
 
-while ($rowVehiculo = $resultVehiculos->fetch_assoc()) {
-  $infoVehiculo = $rowVehiculo['MARCA'] . ' ' . $rowVehiculo['MODELO'] . ' ' . $rowVehiculo['AGNO'] . ' ' . $rowVehiculo['TRANSMISION'] . ' ' . $rowVehiculo['COMBUSTIBLE'] . ' ' . $rowVehiculo['CILINDRADA'];
-  $vehiculos[] = '<option value="' . $rowVehiculo['ID'] . '">' . $infoVehiculo . '</option>';
+while ($row = $result->fetch_assoc()) {
+  $tipos[] = '<option value="' . $row['ID'] . '">' . $row['TIPO'] . '</option>';
 }
 
 // Obtén y muestra las partes disponibles
-$sqlPartes = "SELECT ID, NOMBRE_PARTE FROM parte";
-$resultPartes = $conn->query($sqlPartes);
+$query = "SELECT ID, NOMBRE_PARTE FROM parte";
+$result = $conn->query($query);
 
-while ($rowParte = $resultPartes->fetch_assoc()) {
+while ($rowParte = $result->fetch_assoc()) {
   $partes[] = '<option value="' . $rowParte['ID'] . '">' . $rowParte['NOMBRE_PARTE'] . '</option>';
 }
 
-// Obtén y muestra los datos del repuesto a editar
-$sqlRepuesto = "SELECT * FROM repuesto WHERE ID = $repuestoId";
-$resultRepuesto = $conn->query($sqlRepuesto);
-$repuesto = $resultRepuesto->fetch_assoc();
+// Obtén y muestra los datos del accesorio a editar
+$query = "SELECT * FROM accesorio WHERE ID = $id";
+$result = $conn->query($query);
+$accesorio = $result->fetch_assoc();
 
 
 $conn->close();
 ?>
 
-<!-- Formulario HTML para crear un nuevo repuesto -->
-<form method="post" action="repuesto/update.php">
-  <input type="hidden" name="repuestoId" value="<?= $repuestoId ?>">
+<!-- Formulario HTML para crear un nuevo accesorio -->
+<form method="post" action="/app/modulos/accesorio/update.php">
+  <input type="hidden" name="accesorioId" value="<?= $id ?>">
   <div class="form-group">
-    <label class="text-dark" for="nombre_repuesto">Nombre del Repuesto:</label>
-    <input type="text" name="nombre_repuesto" required class="form-control" value="<?= $repuesto['NOMBRE_REPUESTO'] ?>">
+    <label class="text-dark" for="accesorio">Accesorio:</label>
+    <input type="text" name="accesorio" required class="form-control" value="<?= $accesorio['ACCESORIO'] ?>">
   </div>
 
   <div class="form-group">
-    <label class="text-dark" for="observacion">Observación:</label>
-    <input type="text" name="observacion" class="form-control" value="<?= $repuesto['OBSERVACION'] ?>">
+    <label class="text-dark" for="descripcion">Descripción:</label>
+    <input type="text" name="descripcion" class="form-control" value="<?= $accesorio['DESCRIPCION'] ?>">
+  </div>
+
+  <div class="form-group">
+    <label class="text-dark" for="marca">Marca:</label>
+    <input type="text" name="marca" class="form-control" value="<?= $accesorio['MARCA'] ?>">
   </div>
 
   <div class="form-group">
     <label class="text-dark" for="stock">Stock:</label>
-    <input type="number" name="stock" required class="form-control" value="<?= $repuesto['STOCK'] ?>">
+    <input type="number" name="stock" required class="form-control" value="<?= $accesorio['STOCK'] ?>">
   </div>
 
   <div class="form-group">
     <label class="text-dark" for="precio_unitario">Precio Unitario:</label>
-    <input type="number" name="precio_unitario" step="0.01" required class="form-control" value="<?= $repuesto['PRECIO_UNITARIO'] ?>">
+    <input type="number" name="precio_unitario" step="0.01" required class="form-control" value="<?= $accesorio['PRECIO_UNITARIO'] ?>">
   </div>
 
   <!-- Agregado para FK_VEHICULO -->
   <div class="form-group">
-    <label class="text-dark" for="fk_vehiculo">Vehículo:</label>
-    <select name="fk_vehiculo" class="form-select">
-      <?php echo implode('', $vehiculos); ?>
+    <label class="text-dark" for="fk_tipo_accesorio">Tipo:</label>
+    <select name="fk_tipo_accesorio" class="form-select">
+      <?php echo implode('', $tipos); ?>
     </select>
   </div>
 
@@ -74,7 +78,7 @@ $conn->close();
 
   <div class="row justify-content-center mt-4">
     <div class="col-12 col-md-4">
-      <button type="submit" class="btn btn-light w-100">Actualizar Repuesto</button>
+      <button type="submit" class="btn btn-light w-100">Actualizar</button>
     </div>
   </div>
 </form>

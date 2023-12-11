@@ -81,7 +81,7 @@ if ($result->num_rows > 0) {
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" id="content_eliminar">
-          <form method="post" action="accesorio/delete.php">
+          <form method="post" action="/app/modulos/accesorio/delete.php">
             <input type="hidden" name="accesorioId" value="" id="eliminarAccesorioId">
             <div class="form-group">
               <label for="">Estás seguro de elimiar el registro?</label>
@@ -96,7 +96,7 @@ if ($result->num_rows > 0) {
 
   <script>
     function editar(id) {
-      $("#content_editar").load("editarAccesorio.php?id=" + id);
+      $("#content_editar").load("/app/modulos/accesorio/editarAccesorio.php?id=" + id);
       $("#modal-editar").modal("show");
     }
 

@@ -24,14 +24,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   // Query para insertar un nuevo accesorio
   $sql = "INSERT INTO accesorio (ACCESORIO, DESCRIPCION, MARCA, STOCK, PRECIO_UNITARIO, FK_TIPO_ACCESORIO, FK_PARTE) 
-            VALUES ('$nombre', '$descripcion', '$marca', $stock, $precioUnitario, $fkTipoAccesorio, $fkParte)";
+            VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-  if ($conn->query($sql) === TRUE) {
-    $success = 1;
-    $message = "Accesorio creado exitosamente.";
+  $stmt = $conn->prepare($sql);
+
+  if ($stmt) {
+    $stmt->bind_param("sssiiii", $nombre, $descripcion, $marca, $stock, $precioUnitario, $fkTipoAccesorio, $fkParte);
+
+    if ($stmt->execute()) {
+      $success = 1;
+      $message = "Accesorio creado exitosamente.";
+    } else {
+      $success = 0;
+      $message = "Error al crear el accesorio: " . $stmt->error;
+    }
+
+    $stmt->close();
   } else {
     $success = 0;
-    $message = "Error al crear el accesorio: " . $conn->error;
+    $message = "Error al preparar la consulta: " . $conn->error;
   }
 
   // Cerrar la conexión
