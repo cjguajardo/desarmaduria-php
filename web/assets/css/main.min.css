@@ -12054,6 +12054,10 @@ textarea.form-control-lg {
   background-color: #f5f5f5;
 }
 
+.max-h-90vh {
+  max-height: 90vh;
+}
+
 #sidebar {
   min-width: 150px;
   max-width: 250px;
