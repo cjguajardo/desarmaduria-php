@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 /**
  * Redirects the user to a specified URL with success and message parameters.
  *
