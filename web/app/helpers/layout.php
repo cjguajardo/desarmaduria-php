@@ -22,6 +22,7 @@ class LayoutHelper
   {
     $this->template = str_replace('{{CONTENT}}', $content, $this->template);
     $this->template = str_replace('{{HEADER}}', $header, $this->template);
+    $this->template = str_replace('{{TOAST}}', '', $this->template);
 
     if (!Autenticado::verificarAutenticacion()) {
       $this->template = str_replace('{{TITLE}}', 'Desarmaduría', $this->template);
@@ -78,6 +79,48 @@ class LayoutHelper
     echo $this->template;
     exit;
   }
+  public function renderGuest()
+  {
+    $section = $_GET['section'] ?? 'index';
+    if (stripos($section, '?') !== false) {
+      $section = substr($section, 0, stripos($section, '?'));
+    }
+
+    $rol = 0;
+
+    $title = 'Invitado';
+    $this->template = str_replace('{{TITLE}}', $title . ' # ' . strtoupper($section), $this->template);
+
+    // $content = file_get_contents(__DIR__ . '/../' . $section . '.php');
+    $this->template = str_replace('{{CONTENT}}', '', $this->template);
+
+    $header = $this->renderHeader($rol);
+    $this->template = str_replace('{{HEADER}}', $header, $this->template);
+
+    $sidebar = $this->renderSidebar($rol);
+    $this->template = str_replace('{{SIDEBAR}}', $sidebar, $this->template);
+
+    $scripts = '<script src="/assets/js/' . $section . '.js"></script>';
+
+    [$mensaje, $resultado] = Autenticado::obtenerMensaje();
+    if ($mensaje != null) {
+      $toast = $this->renderToast($mensaje, strtoupper($section), $resultado);
+      $this->template = str_replace('{{TOAST}}', $toast, $this->template);
+      $scripts .= '<script type="text/javascript">';
+      $scripts .= '$(document).ready(function(){$(\'#liveToast\').toast(\'show\');});';
+      $scripts .= 'setTimeout(function(){$(\'#liveToast\').toast(\'hide\');}, 5000);';
+      $scripts .= '</script>';
+    } else {
+      $this->template = str_replace('{{TOAST}}', '', $this->template);
+    }
+
+    $this->template = str_replace('{{SCRIPTS}}', $scripts, $this->template);
+
+
+    echo $this->template;
+    exit;
+  }
+
 
   public function renderHeader(int $rol): string
   {
@@ -107,7 +150,7 @@ class LayoutHelper
       $header .= '    </form>';
     } else {
       $header .= '    <form class="d-flex">';
-      $header .= '      <a href="/app/auth/login.php" class="btn btn-primary">Ingresar</a>';
+      $header .= '      <a href="/app/auth/index.php" class="btn btn-primary">Ingresar</a>';
       $header .= '    </form>';
     }
 

@@ -26,6 +26,6 @@ if ($autenticado === true) {
 
   }
 } else {
-  $content = file_get_contents(__DIR__ . '/app/auth/login-form.php');
-  $layout->render('Iniciar Sesión', $content);
+  header('Location: /app/invitado/index.php');
+  exit;
 }

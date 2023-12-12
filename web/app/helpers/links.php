@@ -6,6 +6,20 @@ class Links
 {
 
   private $links = [
+    0 => [
+      [
+        'title' => 'Accesorios',
+        'href' => 'index.php?section=accesorios',
+      ],
+      [
+        'title' => 'Repuestos',
+        'href' => 'index.php?section=repuestos',
+      ],
+      [
+        'title' => 'Vehículos',
+        'href' => 'index.php?section=vehiculos',
+      ],
+    ],
     1 => [
       [
         'title' => 'Accesorios',

@@ -13,7 +13,7 @@ $autenticado = Autenticado::verificarAutenticacion();
 $rol = Autenticado::rol();
 
 if (!$autenticado) {
-  Autenticado::redireccionar(null);
+  $layout->renderGuest();
 } else {
   if ($rol == 1) {
     $layout->renderAuthenticated();
