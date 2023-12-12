@@ -20,42 +20,42 @@ $result = $conn->query($sql);
 
 // Verificar si hay resultados
 if ($result->num_rows > 0) {
-  // Mostrar datos en una tabla de Bootstrap
-  echo '<table class="table table-bordered">';
-  echo '  <thead>';
-  echo '    <tr>';
-  echo '      <th>Nombre</th>';
-  echo '      <th>Marca</th>';
-  echo '      <th>Tipo</th>';
-  echo '      <th>Descripción</th>';
-  echo '      <th>Stock</th>';
-  echo '      <th>Precio Unitario</th>';
-  echo '      <th>Parte</th>'; // Nuevo encabezado
-  echo '      <th>::</th>'; // Opciones
-  echo '    </tr>';
-  echo '  </thead>';
-  echo '  <tbody>';
-
-  // Mostrar datos
-  while ($row = $result->fetch_assoc()) {
-    echo '<tr>';
-    echo '<td>' . $row["ACCESORIO"] . '</td>';
-    echo '<td>' . $row["MARCA"] . '</td>';
-    echo '<td>' . $row["TIPO_ACCESORIO"] . '</td>';
-    echo '<td>' . $row["DESCRIPCION"] . '</td>';
-    echo '<td>' . $row["STOCK"] . '</td>';
-    echo '<td>' . $row["PRECIO_UNITARIO"] . '</td>';
-    echo '<td>' . $row["NOMBRE_PARTE"] . '</td>'; // Nueva celda
-    echo '<td>' .
-      '<button type="button" class="btn btn-warning" onclick="editar(' . $row["ID"] . ');">Editar</button>' .
-      '<button type="button" class="btn btn-danger" onclick="eliminar(' . $row["ID"] . ');">Eliminar</button>' .
-      '</td>';
-    echo '</tr>';
-  }
-
-  echo '</tbody>';
-  echo '</table>';
 ?>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Marca</th>
+        <th>Tipo</th>
+        <th>Descripción</th>
+        <th>Stock</th>
+        <th>Precio Unitario</th>
+        <th>Parte</th>
+        <th>::</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <?php
+      while ($row = $result->fetch_assoc()) {
+      ?>
+        <tr>
+          <td><?= $row["ACCESORIO"] ?></td>
+          <td><?= $row["MARCA"] ?></td>
+          <td><?= $row["TIPO_ACCESORIO"] ?></td>
+          <td><?= $row["DESCRIPCION"] ?></td>
+          <td><?= $row["STOCK"] ?></td>
+          <td><?= $row["PRECIO_UNITARIO"] ?></td>
+          <td><?= $row["NOMBRE_PARTE"] ?></td>
+          <td>
+            <button type="button" class="btn btn-warning" onclick="editar('<?= $row['ID'] ?>');">Editar</button>
+            <button type="button" class="btn btn-danger" onclick="eliminar('<?= $row['ID'] ?>');">Eliminar</button>
+          </td>
+        </tr>
+      <?php } ?>
+
+    </tbody>
+  </table>
 
   <div class="modal" tabindex="-1" id="modal-editar">
     <div class="modal-dialog">
