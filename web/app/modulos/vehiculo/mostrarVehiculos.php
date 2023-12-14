@@ -1,57 +1,76 @@
 <?php
 // Incluir el archivo de conexión
 include __DIR__ . '/../../db.php';
+include __DIR__ . '/../busqueda/formulario.php';
+
 
 // Query para obtener datos (puedes personalizarla según tus necesidades)
-$sql = "SELECT ingreso_vehiculo.FECHA, vehiculo.TIPO, vehiculo.MARCA, vehiculo.MODELO, vehiculo.AGNO, vehiculo.TRANSMISION, vehiculo.COMBUSTIBLE, vehiculo.CILINDRADA
-        FROM ingreso_vehiculo
-        INNER JOIN VEHICULO ON ingreso_vehiculo.FK_VEHICULO = vehiculo.ID";
+$sql = "SELECT iv.FECHA, 
+          v.TIPO, v.MARCA, 
+          v.MODELO, v.AGNO, 
+          v.TRANSMISION, v.COMBUSTIBLE, 
+          v.CILINDRADA
+        FROM ingreso_vehiculo iv
+        INNER JOIN vehiculo v ON iv.FK_VEHICULO = v.ID";
 
-$result = $conn->query($sql);
+$where = getFilterParams();
+// Agregar parametros de búsqueda en caso de que vengan en la request
+if (count($where) > 0) {
+  $sql .= " WHERE ";
+  foreach ($where as $k => $v) {
+    $sql .= " $k = '$v' AND";
+  }
+  $sql = substr($sql, 0, -3);
+}
+
+$vehiculos = [];
+if ($result = $conn->query($sql)) {
+  while ($row = $result->fetch_assoc()) {
+    $vehiculos[] = $row;
+  }
+}
 
 ?>
 
 <h1 class="text-light">Listado de Vehículos</h1>
 <hr class="text-light">
 
-<?php
-// Verificar si hay resultados
-if ($result->num_rows > 0) {
-  // Mostrar datos en una tabla de Bootstrap
-  echo '<table class="table table-bordered table-responsive">';
-  echo '<thead>';
-  echo '<tr>';
-  echo '<th>Fecha de llegada</th>';
-  echo '<th>Tipo</th>';
-  echo '<th>Marca</th>';
-  echo '<th>Modelo</th>';
-  echo '<th>Año</th>';
-  echo '<th>Transmisión</th>';
-  echo '<th>Combustible</th>';
-  echo '<th>Cilindrada</th>';
-  echo '</tr>';
-  echo '</thead>';
-  echo '<tbody>';
+<?= renderFormulario('vehiculos'); ?>
 
-  // Mostrar datos
-  while ($row = $result->fetch_assoc()) {
-    echo '<tr>';
-    echo '<td>' . $row["FECHA"] . '</td>';
-    echo '<td>' . $row["TIPO"] . '</td>';
-    echo '<td>' . $row["MARCA"] . '</td>';
-    echo '<td>' . $row["MODELO"] . '</td>';
-    echo '<td>' . $row["AGNO"] . '</td>';
-    echo '<td>' . $row["TRANSMISION"] . '</td>';
-    echo '<td>' . $row["COMBUSTIBLE"] . '</td>';
-    echo '<td>' . $row["CILINDRADA"] . '</td>';
-    echo '</tr>';
-  }
+<?php if (count($vehiculos) > 0) { ?>
+  <table class="table table-bordered table-responsive">
+    <thead>
+      <tr>
+        <th>Fecha de llegada</th>
+        <th>Tipo</th>
+        <th>Marca</th>
+        <th>Modelo</th>
+        <th>Año</th>
+        <th>Transmisión</th>
+        <th>Combustible</th>
+        <th>Cilindrada</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php foreach ($vehiculos as $v) { ?>
+        <tr>
+          <td><?= $v["FECHA"] ?></td>
+          <td><?= $v["TIPO"] ?></td>
+          <td><?= $v["MARCA"] ?></td>
+          <td><?= $v["MODELO"] ?></td>
+          <td><?= $v["AGNO"] ?></td>
+          <td><?= $v["TRANSMISION"] ?></td>
+          <td><?= $v["COMBUSTIBLE"] ?></td>
+          <td><?= $v["CILINDRADA"] ?></td>
+        </tr>
+      <?php } ?>
 
-  echo '</tbody>';
-  echo '</table>';
-} else {
-  echo "No se encontraron resultados.";
-}
+    </tbody>
+  </table>
+<?php } else { ?>
+  <div class="alert alert-warning">
+    <strong>¡Atención!</strong> No se encontraron resultados.
+  </div>
+<?php } ?>
 
-// Cerrar la conexión
-$conn->close();
+<?php cerrarConexion(); ?>
