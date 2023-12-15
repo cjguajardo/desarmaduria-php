@@ -5,7 +5,8 @@ include __DIR__ . '/../busqueda/formulario.php';
 
 
 // Query para obtener datos (puedes personalizarla según tus necesidades)
-$sql = "SELECT iv.FECHA, 
+$sql = "SELECT 
+          DATE_FORMAT(iv.FECHA, '%d/%m/%Y') AS FECHA, 
           v.TIPO, v.MARCA, 
           v.MODELO, v.AGNO, 
           v.TRANSMISION, v.COMBUSTIBLE, 

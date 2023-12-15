@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($stmt->execute()) {
       $success = 1;
-      $message = "Vehículo ingresado exitosamente.";
+      $message = "Registro ingresado exitosamente.";
     } else {
       $success = 0;
       $message = "Error al crear el registro: " . $stmt->error;
