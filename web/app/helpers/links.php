@@ -6,6 +6,7 @@ class Links
 {
 
   private $links = [
+    // usuarios (sin autenticar)
     0 => [
       [
         'title' => 'Accesorios',
@@ -20,13 +21,15 @@ class Links
         'href' => 'index.php?section=vehiculos',
       ],
     ],
+    // administrador
     1 => [
       [
         'title' => 'Accesorios',
         'href' => 'index.php?section=accesorios',
         'sublinks' => [
           ['title' => 'Listado', 'href' => '#listado'],
-          ['title' => 'Agregar', 'href' => '#agregar'],
+          ['title' => 'Crear', 'href' => '#agregar'],
+          ['title' => 'Ingresar', 'href' => '#ingresar'],
         ]
       ],
       [
@@ -34,7 +37,8 @@ class Links
         'href' => 'index.php?section=repuestos',
         'sublinks' => [
           ['title' => 'Listado', 'href' => '#listado'],
-          ['title' => 'Agregar', 'href' => '#agregar'],
+          ['title' => 'Crear', 'href' => '#agregar'],
+          ['title' => 'Ingresar', 'href' => '#ingresar'],
         ]
       ],
       [
@@ -55,6 +59,7 @@ class Links
         ],
       ]
     ],
+    // secretaria
     2 => [
       [
         'title' => 'Accesorios',
