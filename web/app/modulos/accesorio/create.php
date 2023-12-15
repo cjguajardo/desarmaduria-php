@@ -33,10 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($stmt->execute()) {
       $success = 1;
-      $message = "Accesorio creado exitosamente.";
+      $message = "Registro creado exitosamente.";
     } else {
       $success = 0;
-      $message = "Error al crear el accesorio: " . $stmt->error;
+      $message = "Error al crear el registro: " . $stmt->error;
     }
 
     $stmt->close();

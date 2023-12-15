@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   // Execute the SQL statement
   if ($stmt->execute()) {
     $success = 1;
-    $message = "Accesorio eliminado exitosamente!";
+    $message = "Registro eliminado exitosamente!";
   } else {
     $success = 0;
     $message = "Error al intentar eliminar el registro: " . $stmt->error;

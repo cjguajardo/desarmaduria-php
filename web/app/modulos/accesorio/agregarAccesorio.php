@@ -24,7 +24,7 @@ while ($rowParte = $result->fetch_assoc()) {
 $conn->close();
 ?>
 
-<h1 class="text-light">Agregar Accesorio</h1>
+<h1 class="text-light">Crear Accesorio</h1>
 <hr class="text-light">
 
 <!-- Formulario HTML para crear un nuevo repuesto -->
