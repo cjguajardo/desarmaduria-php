@@ -35,11 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt->bind_param('iiiid', $idVenta, $id, $cantidad, $precio_unitario, $precio_total);
     $stmt->execute();
-  }
 
-  // actualiza stock de repuestos
-  $sql = "UPDATE repuesto SET STOCK = (STOCK - ?) WHERE ID = ?";
-  $stmt = $conn->prepare($sql);
+    // actualiza stock de repuestos
+    $sql = "UPDATE repuesto SET STOCK = STOCK - ? WHERE ID = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('ii', $rep['CANTIDAD'], $rep['ID']);
+    $stmt->execute();
+  }
 
   foreach ($repuestos as $rep) {
     $rep = json_decode($rep, true);
@@ -65,15 +67,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt->bind_param('iiiid', $idVenta, $id, $cantidad, $precio_unitario, $precio_total);
     $stmt->execute();
-  }
 
-  // actualiza stock de accesorios
-  $sql = "UPDATE accesorio SET STOCK = STOCK - ? WHERE ID = ?";
-  $stmt = $conn->prepare($sql);
-
-  foreach ($accesorios as $acc) {
-    $acc = json_decode($acc, true);
-    $stmt->bind_param('ii', $acc['cantidad'], $acc['id']);
+    // actualiza stock de accesorios
+    $sql = "UPDATE accesorio SET STOCK = STOCK - ? WHERE ID = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('ii', $acc['CANTIDAD'], $acc['ID']);
     $stmt->execute();
   }
 

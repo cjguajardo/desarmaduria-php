@@ -77,10 +77,6 @@ class LayoutHelper
       if ($mensaje != null) {
         $toast = $this->renderToast($mensaje, strtoupper($section), $resultado);
         $this->template = str_replace('{{TOAST}}', $toast, $this->template);
-        $scripts .= '<script type="text/javascript">';
-        $scripts .= '$(document).ready(function(){$(\'#liveToast\').toast(\'show\');});';
-        $scripts .= 'setTimeout(function(){$(\'#liveToast\').toast(\'hide\');}, 5000);';
-        $scripts .= '</script>';
       } else {
         $this->template = str_replace('{{TOAST}}', '', $this->template);
       }

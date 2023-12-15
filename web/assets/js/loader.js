@@ -12,10 +12,13 @@ function cargaVista ( url, id ) {
     const newURL = new URL( url, window.location.origin );
     newURL.search = window.location.search;
     url = newURL.toString();
-    console.log( { url } );
+
     if ( url.indexOf( "/venta/comprobante.php?" ) > -1 ) {
       const id = sessionStorage.getItem( "id_venta" );
       url += `&id=${id}`;
+      sessionStorage.removeItem( 'id_venta' );
+      sessionStorage.removeItem( 'cliente' );
+      sessionStorage.removeItem( 'carrito' );
     }
     $( id ).load( url, function ( _, status, xhr ) {
       if ( status == "error" ) {

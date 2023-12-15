@@ -25,14 +25,14 @@ ORDER BY FECHA DESC";
 $ventas = [];
 if ($result = $conn->query($query)) {
   while ($row = $result->fetch_assoc()) {
-    $subquery = "SELECT
-    (SELECT SUM(TOTAL) FROM venta_accesorio va WHERE va.FK_VENTA = {$row['ID']}) + 
-    (SELECT SUM(TOTAL) FROM venta_repuesto va WHERE va.FK_VENTA = {$row['ID']}) AS total";
+    $subquery = "SELECT 
+    COALESCE((SELECT SUM(TOTAL) FROM venta_accesorio va WHERE va.FK_VENTA = {$row['ID']}), 0) + 
+    COALESCE((SELECT SUM(TOTAL) FROM venta_repuesto va WHERE va.FK_VENTA = {$row['ID']}), 0) AS total;";
 
     $row['TOTAL'] = 0;
     if ($result2 = $conn->query($subquery)) {
       while ($row2 = $result2->fetch_assoc()) {
-        $row['TOTAL'] = $row2['total'];
+        $row['TOTAL'] = $row2['total'] ?? 0;
       }
     }
     $ventas[] = $row;
