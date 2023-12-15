@@ -19,6 +19,7 @@ function respond($success, $message, $url)
   }
 
   $_SESSION['mensaje'] = $message;
+  $_SESSION['resultado'] = $success === 1 || $success === true ? 'success' : 'error';
 
   header("Location: {$url}success=$success");
 }
