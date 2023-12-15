@@ -9,23 +9,18 @@ use App\Helpers\Server;
 $referer = Server::getReferer();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $id = $_POST['accesorioId']; // The ID of the accesorio to update
-  $accesorio = $_POST['accesorio'];
-  $descripcion = $_POST['descripcion'];
-  $marca = $_POST['marca'];
-  $stock = $_POST['stock'];
-  $precio_unitario = $_POST['precio_unitario'];
-  $fk_tipo_accesorio = $_POST['fk_tipo_accesorio'];
-  $fk_parte = $_POST['fk_parte'];
+  $fk_accesorio = $_POST['fk_accesorio'];
+  $fk_ingreso_vehiculo = $_POST['fk_ingreso_vehiculo'];
+  $cantidad = $_POST['cantidad'];
 
   // Check if the accesorio exists
   $stmt = $conn->prepare("SELECT * FROM accesorio WHERE id = ?");
-  $stmt->bind_param("i", $id);
+  $stmt->bind_param("i", $fk_accesorio);
   $stmt->execute();
   $result = $stmt->get_result();
 
   if ($result->num_rows === 0) {
-    echo "Error: No accesorio found with ID " . $id;
+    echo "Error: No accesorio found with ID " . $fk_accesorio;
     $stmt->close();
     $conn->close();
     exit();
@@ -33,19 +28,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   $stmt->close();
 
-  // Prepare an SQL statement to update the accesorio
-  $stmt = $conn->prepare("UPDATE accesorio SET 
-    FK_TIPO_ACCESORIO=?,	
-    ACCESORIO=?,
-    MARCA=?,	
-    DESCRIPCION=?,	
-    STOCK=?,	
-    PRECIO_UNITARIO=?,	
-    FK_PARTE=? 
-    WHERE id = ?");
-  $stmt->bind_param("isssiiii", $fk_tipo_accesorio, $accesorio, $marca, $descripcion, $stock, $precio_unitario, $fk_parte, $id);
+  $stmt = $conn->prepare("INSERT INTO ingreso_accesorio 
+  (FK_INGRESO_VEHICULO, FK_ACCESORIO, CANTIDAD, FECHA) 
+  VALUES (?, ?, ?, NOW())");
+  $stmt->bind_param("iii", $fk_ingreso_vehiculo, $fk_accesorio, $cantidad);
 
   // Execute the SQL statement
+  if ($stmt->execute()) {
+    $success = 1;
+    $message = "Registro actualizado correctamente!";
+  } else {
+    $success = 0;
+    $message = "Error al actualizar el registro: " . $stmt->error;
+  }
+
+  $stmt = $conn->prepare("UPDATE accesorio SET STOCK = STOCK + ? WHERE ID = ?");
+  $stmt->bind_param("ii", $cantidad, $fk_accesorio);
+
   if ($stmt->execute()) {
     $success = 1;
     $message = "Registro actualizado correctamente!";
