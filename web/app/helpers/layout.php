@@ -11,11 +11,23 @@ use App\Helpers\Autenticado as Autenticado;
 class LayoutHelper
 {
   private $template;
+  private $toast;
+  private $sidebar;
+  private $sidebaritem;
 
   public function __construct()
   {
     $template = file_get_contents(__DIR__ . '/layout.template');
     $this->template = $template;
+
+    $toast = file_get_contents(__DIR__ . '/toast.template');
+    $this->toast = $toast;
+
+    $sidebar = file_get_contents(__DIR__ . '/sidebar.template');
+    $this->sidebar = $sidebar;
+
+    $sidebaritem = file_get_contents(__DIR__ . '/sidebaritem.template');
+    $this->sidebaritem = $sidebaritem;
   }
 
   public function render(String $title, String $content, String $header = '')
@@ -121,7 +133,6 @@ class LayoutHelper
     exit;
   }
 
-
   public function renderHeader(int $rol): string
   {
     $links = new Links();
@@ -175,8 +186,6 @@ class LayoutHelper
       return $link['href'] == $base;
     }))[0] ?? [];
 
-    $sidebar = '';
-
     if (count($links) == 0) {
       return '';
     }
@@ -184,43 +193,57 @@ class LayoutHelper
       return '';
     }
 
-
-    $sidebar .= '<nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light pe-0">';
-    $sidebar .= '  <div class="position-sticky mt-3">';
-    $sidebar .= '    <ul class="nav flex-column">';
+    $sidebar = $this->sidebar;
+    $sidebarItems = '';
 
     foreach ($links['sublinks'] as $link) {
-      $sidebar .= '      <li class="nav-item">';
-      $sidebar .= '        <a class="nav-link" href="' . $link['href'] . '" id="' . str_replace('#', '', $link['href']) . '">';
-      $sidebar .= '          ' . $link['title'];
-      $sidebar .= '        </a>';
-      $sidebar .= '      </li>';
+      $sidebarItems .= $this->renderSidebarItem($link['href'], $link['title']);
     }
 
-    $sidebar .= '    </ul>';
-    $sidebar .= '  </div>';
-    $sidebar .= '</nav>';
+    $sidebar = str_replace('{{ITEMS}}', $sidebarItems, $sidebar);
 
     return $sidebar;
   }
 
+  private function renderSidebarItem(String $href, String $title): string
+  {
+    $sidebaritem = $this->sidebaritem;
+    $sidebaritem = str_replace('{{LINK}}', $href, $sidebaritem);
+    $sidebaritem = str_replace('{{TITLE}}', $title, $sidebaritem);
+    $sidebaritem = str_replace('{{ID}}', str_replace('#', '', $href), $sidebaritem);
+
+    return $sidebaritem;
+  }
+
   public function renderToast(String $mensaje, String $titulo, String $tipo = 'success'): string
   {
-    $toast = '';
+    switch (strtolower($tipo)) {
+      case 'success':
+      case 'error':
+      case 'info':
+        break;
+      default:
+        $tipo = 'info';
+        break;
+    }
 
-    $toast .= '<div class="toast-container position-fixed bottom-0 end-0 p-3">';
-    $toast .= '  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">';
-    $toast .= '    <div class="toast-header">';
-    $toast .= '      <img src="/assets/img/' . $tipo . '.svg" class="rounded me-2" alt="...">';
-    $toast .= '      <strong class="me-auto">' . $titulo . '</strong>';
-    $toast .= '      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>';
-    $toast .= '    </div>';
-    $toast .= '    <div class="toast-body">';
-    $toast .= '      ' . $mensaje;
-    $toast .= '    </div>';
-    $toast .= '  </div>';
-    $toast .= '</div>';
+    $id = 'toast_' . md5($mensaje . $titulo . $tipo);
 
-    return $toast;
+    $html = $this->toast;
+    $html = str_replace('{{ID}}', $id, $html);
+    $html = str_replace('{{ICON}}', $tipo, $html);
+    $html = str_replace('{{TITLE}}', $titulo, $html);
+    $html = str_replace('{{CONTENT}}', $mensaje, $html);
+
+    return $html;
+  }
+
+  public function renderNoAutenticado(): string
+  {
+    $html = '<div class="alert alert-danger" role="alert">';
+    $html .= 'No tienes permisos para acceder a esta página';
+    $html .= '</div>';
+
+    return $html;
   }
 }
