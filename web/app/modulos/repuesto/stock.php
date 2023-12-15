@@ -9,22 +9,18 @@ use App\Helpers\Server;
 $referer = Server::getReferer();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $repuestoId = $_POST['repuestoId']; // The ID of the repuesto to update
-  $nombre_repuesto = $_POST['nombre_repuesto'];
-  $observacion = $_POST['observacion'];
-  $stock = $_POST['stock'];
-  $precio_unitario = $_POST['precio_unitario'];
-  $fk_vehiculo = $_POST['fk_vehiculo'];
-  $fk_parte = $_POST['fk_parte'];
+  $fk_repuesto = $_POST['fk_repuesto'];
+  $fk_ingreso_vehiculo = $_POST['fk_ingreso_vehiculo'];
+  $cantidad = $_POST['cantidad'];
 
   // Check if the repuesto exists
   $stmt = $conn->prepare("SELECT * FROM repuesto WHERE id = ?");
-  $stmt->bind_param("i", $repuestoId);
+  $stmt->bind_param("i", $fk_repuesto);
   $stmt->execute();
   $result = $stmt->get_result();
 
   if ($result->num_rows === 0) {
-    echo "Error: No repuesto found with ID " . $repuestoId;
+    echo "Error: No repuesto found with ID " . $fk_repuesto;
     $stmt->close();
     $conn->close();
     exit();
@@ -32,18 +28,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   $stmt->close();
 
-  // Prepare an SQL statement to update the repuesto
-  $stmt = $conn->prepare("UPDATE repuesto SET 
-    FK_VEHICULO=?,	
-    NOMBRE_REPUESTO=?,	
-    OBSERVACION=?,	
-    STOCK=?,	
-    PRECIO_UNITARIO=?,	
-    FK_PARTE=? 
-    WHERE id = ?");
-  $stmt->bind_param("issiiii", $fk_vehiculo, $nombre_repuesto, $observacion, $stock, $precio_unitario, $fk_parte, $repuestoId);
+  $stmt = $conn->prepare("INSERT INTO ingreso_repuesto 
+  (FK_INGRESO_VEHICULO, FK_REPUESTO, CANTIDAD, FECHA) 
+  VALUES (?, ?, ?, NOW())");
+  $stmt->bind_param("iii", $fk_ingreso_vehiculo, $fk_repuesto, $cantidad);
 
   // Execute the SQL statement
+  if ($stmt->execute()) {
+    $success = 1;
+    $message = "Registro actualizado correctamente!";
+  } else {
+    $success = 0;
+    $message = "Error al actualizar el registro: " . $stmt->error;
+  }
+
+  $stmt = $conn->prepare("UPDATE repuesto SET STOCK = STOCK + ? WHERE ID = ?");
+  $stmt->bind_param("ii", $cantidad, $fk_repuesto);
+
   if ($stmt->execute()) {
     $success = 1;
     $message = "Registro actualizado correctamente!";
